@@ -59,19 +59,6 @@ module.exports = {
             renderer.render(scene, camera);
         });
 
-
-        function createMesh(geom, imageFile) {
-            var texture = THREE.ImageUtils.loadTexture(imageFile);
-            var mat = new THREE.MeshPhongMaterial();
-            mat.map = texture;//材质的Map属性用于添加纹理
-            var mesh = new THREE.Mesh(geom, mat);
-            return mesh;
-        }
-        var sphere = createMesh(new THREE.SphereGeometry(5, 20, 20), '../resource/img/earth.png');
-        scene.add(sphere);
-
-        let earthSkinPic = THREE.ImageUtils.loadTexture('../resource/img/earth.png');
-
         /*sun*/
         Sun = new THREE.Mesh( new THREE.SphereGeometry( 12 ,16 ,16 ),
             new THREE.MeshLambertMaterial({
@@ -99,19 +86,19 @@ module.exports = {
         scene.add(opSun);
 
         /*planets*/
-        Mercury = this.initPlanet('Mercury',0.02,0,'rgb(124,131,203)',20,2);
+        Mercury = this.initPlantWithSkin('Mercury',0.02,0,20,2,'../resource/img/mercury.png');
         stars.push(Mercury);
 
-        Venus = this.initPlanet('Venus',0.012,0,'rgb(190,138,44)',30,4);
+        Venus = this.initPlantWithSkin('Venus',0.012,0,30,4,'../resource/img/venus.png');
         stars.push(Venus);
 
         Earth = this.initEarth('Earth',0.010,0,40,5);
         stars.push(Earth);
 
-        Mars = this.initPlanet('Mars',0.008,0,'rgb(210,81,16)',50,4);
+        Mars = this.initPlantWithSkin('Mars',0.008,0,50,4,'../resource/img/mars.png');
         stars.push(Mars);
 
-        Jupiter = this.initPlanet('Jupiter',0.006,0,'rgb(254,208,101)',70,9);
+        Jupiter = this.initPlantWithSkin('Jupiter',0.006,0,70,9, '../resource/img/jupiter.png');
         stars.push(Jupiter);
 
         Saturn = this.initPlanet('Saturn',0.005,0,'rgb(210,140,39)',100,7,{
@@ -121,10 +108,10 @@ module.exports = {
         });
         stars.push(Saturn);
 
-        Uranus = this.initPlanet('Uranus',0.003,0,'rgb(49,168,218)',120,4);
+        Uranus = this.initPlantWithSkin('Uranus',0.003,0,120,4, '../resource/img/uranus.png');
         stars.push(Uranus);
 
-        Neptune = this.initPlanet('Neptune',0.002,0,'rgb(84,125,204)',150,3);
+        Neptune = this.initPlantWithSkin('Neptune',0.002,0,150,3, '../resource/img/neptune.png');
         stars.push(Neptune);
 
         //环境光
@@ -133,7 +120,7 @@ module.exports = {
 
         /*太阳光*/
         // PointLight的后两个参数代表光照强度和光照影响的距离。接收第三个参数的话就代表光照衰减。
-        let sunLight = new THREE.PointLight(0xddddaa,1.5,500);
+        let sunLight = new THREE.PointLight(0xddddaa,1.5);
         scene.add(sunLight);
 
 
@@ -299,6 +286,8 @@ module.exports = {
         let mesh = new THREE.Mesh( new THREE.SphereGeometry( volume, 16,16 ), mat );
 
         mesh.position.x = distance;
+        // mesh.position.y = 0.01;
+        mesh.rotateY += 0.08;
         mesh.receiveShadow = true;
         mesh.castShadow = true;
 
@@ -325,48 +314,56 @@ module.exports = {
         return star;
     },
 
+    initPlantWithSkin(name, speed, angle, distance, volume, skinUrl){
+        var texture = THREE.ImageUtils.loadTexture(skinUrl);
+        var mat = new THREE.MeshPhongMaterial();
+        mat.map = texture;//材质的Map属性用于添加纹理
+        let mesh = new THREE.Mesh( new THREE.SphereGeometry( volume, 16,16 ), mat );
 
-    /*初始化指向显示星星名字*/
-    displayPlanetName(){
-        stars.forEach(star=>
-            nameConstructor(star.name,stars.volume)
+        mesh.position.x = distance;
+        mesh.receiveShadow = true;
+        mesh.castShadow = true;
+
+        mesh.name = name;
+
+        /*轨道*/
+        let track = new THREE.Mesh( new THREE.RingGeometry (distance-0.2, distance+0.2, 64,1),
+            new THREE.MeshBasicMaterial( { color: 0x888888, side: THREE.DoubleSide } )
         );
-        nameConstructor('Sun', 12);
-        nameConstructor('Mercury', 12);
-        nameConstructor('Earth', 12);
-        nameConstructor('Venus', 12);
-        nameConstructor('Mars', 12);
-        nameConstructor('Jupiter', 12);
-        nameConstructor('Saturn', 12);
-        nameConstructor('Uranus', 12);
-        nameConstructor('Neptune', 12);
+        track.rotation.x = - Math.PI / 2;
+        scene.add(track);
 
-        /*根据行星名字和体积构造显示名字*/
-        function nameConstructor(name,volume){
-            let planetName = new THREE.Mesh( 
-                new THREE.TextGeometry( name, {
-                    size: 4,
-                    height: 4
-                }),
-                new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide} )
-            );
-            planetName.volume = volume;
-            planetName.visible = false;
-            starNames[name] = planetName;
-            scene.add(planetName);
+        let star = {
+            name,
+            speed,
+            angle,
+            distance,
+            volume,
+            Mesh : mesh
         }
+
+
+        scene.add(mesh);
+
+        return star;
     },
+
 
     /*行星移动*/
     move(){
 
-        /*行星公转*/   
-        stars.forEach(star=>
-             this.moveEachStar(star)
-        )
+
+
+        /*行星公转*/
+        stars.forEach(star=>{
+        this.moveEachStar(star)
+        }
+
+    )
 
         /*太阳自转*/
         Sun.rotation.y = (Sun.rotation.y == 2*Math.PI ? 0.0008*Math.PI : Sun.rotation.y+0.0008*Math.PI);
+        // Earth.rotation.z = (Earth.rotation.z == 2*Math.PI ? 0.0008*Math.PI : Earth.rotation.z+0.0008*Math.PI);
 
         /*鼠标视角控制*/
         control.update( clock.getDelta() );
@@ -412,9 +409,39 @@ module.exports = {
         stat.update();
     },
 
+    /*初始化指向显示星星名字*/
+    displayPlanetName(){
+        stars.forEach(star=>
+            nameConstructor(star.name,stars.volume)
+        );
+        nameConstructor('Sun', 12);
+        nameConstructor('Mercury', 12);
+        nameConstructor('Earth', 12);
+        nameConstructor('Venus', 12);
+        nameConstructor('Mars', 12);
+        nameConstructor('Jupiter', 12);
+        nameConstructor('Saturn', 12);
+        nameConstructor('Uranus', 12);
+        nameConstructor('Neptune', 12);
+
+        /*根据行星名字和体积构造显示名字*/
+        function nameConstructor(name,volume){
+            let planetName = new THREE.Mesh(
+                new THREE.TextGeometry( name, {
+                    size: 4,
+                    height: 4
+                }),
+                new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide} )
+            );
+            planetName.volume = volume;
+            planetName.visible = false;
+            starNames[name] = planetName;
+            scene.add(planetName);
+        }
+    },
+
     /*每一颗行星的公转*/
     moveEachStar(star){
-
         star.angle+=star.speed;
         if (star.angle > Math.PI * 2) {
             star.angle -= Math.PI * 2;
