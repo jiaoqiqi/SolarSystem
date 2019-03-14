@@ -59,6 +59,19 @@ module.exports = {
             renderer.render(scene, camera);
         });
 
+
+        function createMesh(geom, imageFile) {
+            var texture = THREE.ImageUtils.loadTexture(imageFile);
+            var mat = new THREE.MeshPhongMaterial();
+            mat.map = texture;//材质的Map属性用于添加纹理
+            var mesh = new THREE.Mesh(geom, mat);
+            return mesh;
+        }
+        var sphere = createMesh(new THREE.SphereGeometry(5, 20, 20), '../resource/img/earth.png');
+        scene.add(sphere);
+
+        let earthSkinPic = THREE.ImageUtils.loadTexture('../resource/img/earth.png');
+
         /*sun*/
         Sun = new THREE.Mesh( new THREE.SphereGeometry( 12 ,16 ,16 ),
             new THREE.MeshLambertMaterial({
@@ -73,10 +86,10 @@ module.exports = {
         scene.add(Sun);
 
         /*opacity sun*/
-        let opSun = new THREE.Mesh( new THREE.SphereGeometry( 14 ,16 ,16 ),
+        let opSun = new THREE.Mesh( new THREE.SphereGeometry( 14 ,28 ,28 ),
             new THREE.MeshLambertMaterial({
                 color: 0xff0000,
-                /*emissive: 0xdd4422,*/
+                // emissive: 0xdd4422,
                 transparent:true,
                 opacity: .35
             })
@@ -92,7 +105,7 @@ module.exports = {
         Venus = this.initPlanet('Venus',0.012,0,'rgb(190,138,44)',30,4);
         stars.push(Venus);
 
-        Earth = this.initPlanet('Earth',0.010,0,'rgb(46,69,119)',40,5);
+        Earth = this.initEarth('Earth',0.010,0,40,5);
         stars.push(Earth);
 
         Mars = this.initPlanet('Mars',0.008,0,'rgb(210,81,16)',50,4);
@@ -119,8 +132,10 @@ module.exports = {
         scene.add(ambient);
 
         /*太阳光*/
+        // PointLight的后两个参数代表光照强度和光照影响的距离。接收第三个参数的话就代表光照衰减。
         let sunLight = new THREE.PointLight(0xddddaa,1.5,500);
         scene.add(sunLight);
+
 
 
         /*背景星星*/
@@ -224,15 +239,14 @@ module.exports = {
 
     /**
      * 初始化行星
-     * @param  {[type]} speed    [description]
-     * @param  {[type]} angle    [description]
-     * @param  {[type]} color    [description]
-     * @param  {[type]} distance [description]
-     * @param  {[type]} volume   [description]
-     * @param  {[type]} ringMsg  [description]
-     * @return {[type]}          [description]
+     * @param name  行星名字
+     * @param color  颜色
+     * @param distance  距离原点（太阳中心）的距离
+     * @param volume  体积
+     * @returns {{name: *, distance: *, volume: *, Mesh: THREE.Mesh}}
      */
     initPlanet(name,speed,angle,color,distance,volume,ringMsg){
+
         let mesh = new THREE.Mesh( new THREE.SphereGeometry( volume, 16,16 ),
             new THREE.MeshLambertMaterial( { color } ) 
         );
@@ -278,12 +292,54 @@ module.exports = {
         return star;
     },
 
+    initEarth(name,speed,angle,distance,volume){
+        var texture = THREE.ImageUtils.loadTexture('../resource/img/earth.png');
+        var mat = new THREE.MeshPhongMaterial();
+        mat.map = texture;//材质的Map属性用于添加纹理
+        let mesh = new THREE.Mesh( new THREE.SphereGeometry( volume, 16,16 ), mat );
+
+        mesh.position.x = distance;
+        mesh.receiveShadow = true;
+        mesh.castShadow = true;
+
+        mesh.name = name;
+
+        /*轨道*/
+        let track = new THREE.Mesh( new THREE.RingGeometry (distance-0.2, distance+0.2, 64,1),
+            new THREE.MeshBasicMaterial( { color: 0x888888, side: THREE.DoubleSide } )
+        );
+        track.rotation.x = - Math.PI / 2;
+        scene.add(track);
+
+        let star = {
+            name,
+            speed,
+            angle,
+            distance,
+            volume,
+            Mesh : mesh
+        }
+
+        scene.add(mesh);
+
+        return star;
+    },
+
+
     /*初始化指向显示星星名字*/
     displayPlanetName(){
         stars.forEach(star=>
             nameConstructor(star.name,stars.volume)
-        )
+        );
         nameConstructor('Sun', 12);
+        nameConstructor('Mercury', 12);
+        nameConstructor('Earth', 12);
+        nameConstructor('Venus', 12);
+        nameConstructor('Mars', 12);
+        nameConstructor('Jupiter', 12);
+        nameConstructor('Saturn', 12);
+        nameConstructor('Uranus', 12);
+        nameConstructor('Neptune', 12);
 
         /*根据行星名字和体积构造显示名字*/
         function nameConstructor(name,volume){
