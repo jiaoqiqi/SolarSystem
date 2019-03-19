@@ -224,13 +224,14 @@ module.exports = {
 
     /**
      * 初始化行星
-     * @param name  行星名字
-     * @param color  颜色
-     * @param distance  距离原点（太阳中心）的距离
-     * @param volume  体积
-     * @returns {{name: *, distance: *, volume: *, Mesh: THREE.Mesh}}
+     *  name  行星名字
+     * color  颜色
+     * distance  距离原点（太阳中心）的距离
+     * volume  体积
+     * {{name: *, distance: *, volume: *, Mesh: THREE.Mesh}}
      */
     initPlanet(name, speed, angle, color, distance, volume, ringMsg) {
+
 
         let mesh = new THREE.Mesh(new THREE.SphereGeometry(volume, 16, 16),
             new THREE.MeshLambertMaterial({color})
@@ -432,6 +433,7 @@ module.exports = {
         nameConstructor('Saturn', 12);
         nameConstructor('Uranus', 12);
         nameConstructor('Neptune', 12);
+        nameConstructor('Ring', 12);
 
         /*根据行星名字和体积构造显示名字*/
         function nameConstructor(name, volume) {
