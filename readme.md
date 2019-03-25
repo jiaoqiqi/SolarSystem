@@ -8,6 +8,20 @@ Three.js太阳系运转
 2. npm run dev
 3. open [127.0.0.1:8080/solar/SolarSystem.html](127.0.0.1:8080/solar/SolarSystem.html)
 
+### all Plants
+init.js  ------------------初始化Three.js组件
+data.js  ------------------太阳系原始数据
+
+
+太阳系模型分析
+
+
+八大行星的公转轨道半径 = 太阳的半径 + 日距
+八大行星的公转轨道圆心偏转值 = (远日距 - 近日距)/2
+
+太阳系最大范围 =  太阳半径 + 海王星日距
+
+
 ### 准备
 首先写一个简单的页面，准备一个canvas容器:
 在js文件中准备好三要素：renderer, camera, scene
