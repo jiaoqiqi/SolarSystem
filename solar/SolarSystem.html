@@ -5,72 +5,61 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Solar System</title>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
-
-        <script>
-        (function() {
-            let main, $output;
-            const scale = 0.25;
-            const initialize = function() {
-                $output = $("#output");
-                main = $("#main").get(0);
-                $("#capture").click(captureImage);
-            };
-            let captureImage = function() {
-                let canvas = document.createElement("canvas");
-                canvas.width = main.videoWidth * scale;
-                canvas.height = main.videoHeight * scale;
-                canvas.getContext('2d').drawImage(main, 0, 0, canvas.width, canvas.height);
-                let img = document.createElement("img");
-                img.src= canvas.toDataURL();
-                $output.prepend(img);
-            };
-            $(initialize);
-        }());
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="SolarSystem.js"></script>
+    <script>
+      function screen(){
+        var fun = beforeScreen(); //引用abc函数
+        fun();
+      }
     </script>
 
     <script>
-        document.onkeydown=function(event){
-            let e = event || window.event || arguments.callee.caller.arguments[0];
-            if(e && e.keyCode === 76){
-                window.location.href = "http://staging.school.thoughtworks.cn/learn/auth/login"
-            }
-        };
+      document.onkeydown = function (event) {
+        let e = event || window.event || arguments.callee.caller.arguments[0];
+        if (e && e.keyCode === 76) {
+          window.location.href = "http://staging.school.thoughtworks.cn/learn/auth/login"
+        }
+      };
     </script>
 
     <style>
-        body{
-            margin:0;
+        body {
+            margin: 0;
             padding: 0;
             overflow: hidden;
         }
 
-        #tips{
+        #tips {
             position: absolute;
-            top:2%;
+            top: 2%;
             left: 40%;
 
             font-size: 16px;
-            color:#fff;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <canvas width="1200" height="600" id="main"></canvas>
-    <div id="tips">
-        Use W A S D and your mouse to move and press L to login
-        <button id="capture">Capture</button>
-        <div id="output"></div>
-        <!--<img src="./images/ring.jpg" alt="">-->
+<canvas width="1200" height="600" id="main"></canvas>
+
+<div id="tips">
+    <div>
+        <p>Use W A S D and your mouse to move and press L to login</p>
+        <button id="capture" onclick="screen()">Capture</button>
     </div>
+    <!--<div>-->
+    <!--<canvas width="1200" height="600" id="main"></canvas>-->
+    <!--</div>-->
+</div>
 
+<script src="../resource/js/three/three.js"></script>
+<script src="../resource/js/three/stats.min.js"></script>
+<script src="../resource/js/three/firstPersonControl.js"></script>
+<script src="../resource/js/three/helvetiker_regular.typeface.js"></script>
 
-    <script src="../resource/js/three/three.js"></script>
-    <script src="../resource/js/three/stats.min.js"></script>
-    <script src="../resource/js/three/firstPersonControl.js"></script>
-    <script src="../resource/js/three/helvetiker_regular.typeface.js"></script>
-
-    <script src="http://localhost:8080/webpack-dev-server.js"></script>
-    <script src="/main.js"></script>
+<script src="http://localhost:8080/webpack-dev-server.js"></script>
+<script src="/main.js"></script>
 
 </body>
 </html>

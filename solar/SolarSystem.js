@@ -43,6 +43,7 @@ module.exports = {
         renderer.shadowMap.enabled = true; //辅助线
         renderer.shadowMapSoft = true; //柔和阴影
         renderer.setClearColor(0xffffff, 0);
+        renderer.preserveDrawingBuffer = true;
 
         /*scene*/
         scene = new THREE.Scene();
@@ -459,4 +460,22 @@ module.exports = {
         }
         star.Mesh.position.set(star.distance * Math.sin(star.angle), 0, star.distance * Math.cos(star.angle));
     }
+}
+
+function beforeScreen() {
+  renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    preserveDrawingBuffer: true
+  })
+  let canvas = document.querySelector("#main")
+  renderer.render(scene, camera)
+  var imgUri = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  window.location.href = imgUri // 下载图片
+
+  // html2canvas(document.querySelector("#tips")).then(canvas => {
+  //   document.body.appendChild(canvas)
+  //   var img = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  //   window.location.href = img // 下载图片
+  // });
 }
