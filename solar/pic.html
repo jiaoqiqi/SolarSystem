@@ -4,37 +4,82 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script>
-        (function() {
-            "use strict";
-            var video, $output;
-            var scale = 0.25;
-            var initialize = function() {
-                $output = $("#output");
-                video = $("#video").get(0);
-                $("#capture").click(captureImage);
-            };
-            var captureImage = function() {
-                var canvas = document.createElement("canvas");
-                canvas.width = video.videoWidth * scale;
-                canvas.height = video.videoHeight * scale;
-                canvas.getContext('2d')
-                    .drawImage(video, 0, 0, canvas.width, canvas.height);
-                var img = document.createElement("img");
-                img.src= canvas.toDataURL();
-                $output.prepend(img);
-            };
-            $(initialize);
-        }());
+        // (function() {
+        //     "use strict";
+        //     var video, $output;
+        //     var scale = 0.25;
+        //     var initialize = function() {
+        //         $output = $("#output");
+        //         video = $("#video").get(0);
+        //         $("#capture").click(captureImage);
+        //     };
+        //     var captureImage = function() {
+        //         var canvas = document.createElement("canvas");
+        //         canvas.width = video.videoWidth * scale;
+        //         canvas.height = video.videoHeight * scale;
+        //         canvas.getContext('2d')
+        //             .drawImage(video, 0, 0, canvas.width, canvas.height);
+        //         var img = document.createElement("img");
+        //         img.src= canvas.toDataURL();
+        //         $output.prepend(img);
+        //     };
+        //     $(initialize);
+        // }());
 
+        function copy() {
+          let HeaderImage = document.getElementById('HeaderImage');
+          let controlRange;
+          if (document.body.createControlRange) {
+            controlRange = document.body.createControlRange();
+            controlRange.addElement(HeaderImage);
+            controlRange.execCommand('Copy');
+          }else{
+            console.log(5555)
+          }
+          return false;
+        }
+
+    </script>
+      <script type="text/javascript">
+        function ClipBoard(url) {
+          window.clipboardData.setData('Text', url)
+          alert(url);
+        }
+    </script>
+
+
+    <script type="text/javascript">
+      function copyToClipboard(text) {
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+      }
+    </script>
+    <script>
+      function downloadImage(imgurl) {
+        //imgurl 图片地址
+        var a = $("<a></a>").attr("href", imgurl).attr("download", "img.png").appendTo("body");
+        a[0].click();
+        a.remove();
+      }
     </script>
 </head>
 <body>
 
-<video id="video" controls="controls"&gt;
+<form id="form1" runat="server">
+    <input id="MainContent_lblHtml" type="button" value="button" onclick="copyToClipboard('');" />
+</form>
+
+<video id="video" controls="controls"&gt;>
 <source src=".mp4" />
 </video>
 <button id="capture">Capture</button>
-<div id="output"></div>
+<button onclick="copy()">copy</button>
+<!--<img src="./images/galaxy_starfield.jpg" alt="" id="HeaderImage">-->
+<!--<div id="output"></div>-->
+
+
+<!--<form id="form1" runat="server">-->
+    <!--<button onclick="ClipBoard('http://www.asp.net')">Copy to Clipboard</button>-->
+<!--</form>-->
 
 </body>
 </html>
