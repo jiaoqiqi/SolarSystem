@@ -86,32 +86,32 @@ module.exports = {
         scene.add(opSun);
 
         /*planets*/
-        Mercury = this.initPlantWithSkin('Mercury', 0.02, 0, 20, 2, '../resource/img/mercury.png');
+        Mercury = this.initPlantWithSkin('Mercury', 0.02, 0, 15, 2, '../resource/img/mercury.png');
         stars.push(Mercury);
 
-        Venus = this.initPlantWithSkin('Venus', 0.012, 0, 30, 4, '../resource/img/venus.png');
+        Venus = this.initPlantWithSkin('Venus', 0.012, 0, 14, 4, '../resource/img/venus.png');
         stars.push(Venus);
 
-        Earth = this.initEarth('Earth', 0.010, 0, 40, 5);
+        Earth = this.initEarth('Earth', 0.010, 0, 20, 5);
         stars.push(Earth);
 
-        Mars = this.initPlantWithSkin('Mars', 0.008, 0, 50, 4, '../resource/img/mars.png');
+        Mars = this.initPlantWithSkin('Mars', 0.008, 0, 30, 4, '../resource/img/mars.png');
         stars.push(Mars);
 
-        Jupiter = this.initPlantWithSkin('Jupiter', 0.006, 0, 70, 9, '../resource/img/jupiter.png');
+        Jupiter = this.initPlantWithSkin('Jupiter', 0.006, 0, 104, 9, '../resource/img/jupiter.png');
         stars.push(Jupiter);
 
-        Saturn = this.initPlanet('Saturn', 0.005, 0, 'rgb(210,140,39)', 100, 7, {
+        Saturn = this.initPlanet('Saturn', 0.005, 0, 'rgb(210,140,39)', 190, 7, {
             color: 'rgb(136,75,30)',
             innerRadius: 9,
             outerRadius: 11
         });
         stars.push(Saturn);
 
-        Uranus = this.initPlantWithSkin('Uranus', 0.003, 0, 120, 4, '../resource/img/uranus.png');
+        Uranus = this.initPlantWithSkin('Uranus', 0.003, 0, 384, 4, '../resource/img/uranus.png');
         stars.push(Uranus);
 
-        Neptune = this.initPlantWithSkin('Neptune', 0.002, 0, 150, 3, '../resource/img/neptune.png');
+        Neptune = this.initPlantWithSkin('Neptune', 0.002, 0, 600, 3, '../resource/img/neptune.png');
         stars.push(Neptune);
 
         //环境光
@@ -460,22 +460,4 @@ module.exports = {
         }
         star.Mesh.position.set(star.distance * Math.sin(star.angle), 0, star.distance * Math.cos(star.angle));
     }
-}
-
-function beforeScreen() {
-  renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true,
-    preserveDrawingBuffer: true
-  })
-  let canvas = document.querySelector("#main")
-  renderer.render(scene, camera)
-  var imgUri = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-  window.location.href = imgUri // 下载图片
-
-  // html2canvas(document.querySelector("#tips")).then(canvas => {
-  //   document.body.appendChild(canvas)
-  //   var img = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-  //   window.location.href = img // 下载图片
-  // });
 }
